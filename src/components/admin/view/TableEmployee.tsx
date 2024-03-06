@@ -65,7 +65,7 @@ export default function TableEmployee() {
   return (
     <>
       <div className="mb-3">
-        <a href="#">
+        <a href="dashboard/add">
           <Button color="green" placeholder={undefined}>
             Add Employee
           </Button>

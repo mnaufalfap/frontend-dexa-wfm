@@ -16,6 +16,7 @@ const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
 const HomePage = lazy(() => import("../pages/dashboard/HomePage"));
 const AdminPage = lazy(() => import("../pages/admin/AdminPage"));
 const EditEmployee = lazy(() => import("../pages/admin/EditEmployee"));
+const AddEmployee = lazy(() => import("../pages/admin/AddEmployee"));
 
 const routes: RouteObject[] = [
   {
@@ -92,6 +93,14 @@ const routes: RouteObject[] = [
     element: (
       <AdminLayout>
         <EditEmployee />,
+      </AdminLayout>
+    ),
+  },
+  {
+    path: "/admin/dashboard/add",
+    element: (
+      <AdminLayout>
+        <AddEmployee />
       </AdminLayout>
     ),
   },
