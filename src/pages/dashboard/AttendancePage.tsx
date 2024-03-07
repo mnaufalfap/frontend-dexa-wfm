@@ -64,7 +64,7 @@ export default function AttendancePage() {
       photo_attendance: image,
     };
     console.log(data);
-    const url = `${HOST_API}/user/attendance`;
+    const url = `${HOST_API}/attendance`;
     const response = await axios.post(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -116,7 +116,6 @@ export default function AttendancePage() {
                 <p>
                   Attendance Date & Time: {attendanceData.attendanceDateTime}
                 </p>
-                <p>Location: {attendanceData.location}</p>
               </div>
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

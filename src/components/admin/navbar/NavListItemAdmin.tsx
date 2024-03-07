@@ -2,9 +2,9 @@ import { CalendarDaysIcon } from "@heroicons/react/24/solid";
 
 const navListItemsAdmin = [
   {
-    label: "Attendance",
+    label: "Reporting Attendance",
     icon: CalendarDaysIcon,
-    url: "/user/attendance",
+    url: "/admin/attendance",
   },
 ];
 

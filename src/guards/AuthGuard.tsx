@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { decodeToken, selectToken } from "../slice/tokenSlice";
 
@@ -55,8 +55,9 @@ export default function AdminGuard({ children }: AdminGuardProps) {
 
   const isAttendancePage = location.pathname === "/user/attendance";
   if (isAttendancePage) {
-    return <>{children}</>;
+    <Navigate to={"/user/attendance"} />;
+  } else {
+    <Navigate to={"/user/dashboard"} />;
   }
-
   return <>{children}</>;
 }

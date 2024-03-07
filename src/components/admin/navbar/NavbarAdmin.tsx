@@ -25,7 +25,7 @@ export function NavbarAdmin() {
       placeholder={undefined}
     >
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
-        <a href="/user/dashboard" className="mr-5">
+        <a href="/admin/dashboard" className="mr-5">
           <Image className="w-24" image={Logo} alt="Logo" />
         </a>
         <div className="hidden lg:block">

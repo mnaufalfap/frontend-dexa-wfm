@@ -7,6 +7,7 @@ import {
   Typography,
   Select,
   Option,
+  Alert,
 } from "@material-tailwind/react";
 import axios from "axios";
 import { HOST_API } from "../../config";
@@ -19,8 +20,8 @@ export default function AddEmployee() {
     department_id: "",
     email: "",
   });
-  const queryParams = new URLSearchParams(window.location.search);
-  const id = queryParams.get("");
+  const [selectedPositionId, setSelectedPositionId] = useState("");
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
   const navigate = useNavigate();
 
   const handleInputChange = (e: { target: { name: any; value: any } }) => {
@@ -31,18 +32,27 @@ export default function AddEmployee() {
     }));
   };
 
+  const handlePositionChange = (value: any) => {
+    setSelectedPositionId(value);
+  };
+
+  const handleDepartmentChange = (value: any) => {
+    setSelectedDepartmentId(value);
+  };
+
   const handleAddUser = async () => {
     try {
       const token = localStorage.getItem("_token");
-      const parsedUserId = id ? parseInt(id) : undefined;
 
-      const url = `${HOST_API}/user/${id}`;
+      const url = `${HOST_API}/user/signup`;
       const data = {
-        user_id: parsedUserId,
         name: inputData.name,
-        position_id: inputData.position_id,
-        department_id: inputData.department_id,
         email: inputData.email,
+        position_id: selectedPositionId,
+        department_id: selectedDepartmentId,
+        password: "dexa1234",
+        confirmPassword: "dexa1234",
+        roleId: 2,
       };
       const response = await axios.post(url, data, {
         headers: {
@@ -52,8 +62,10 @@ export default function AddEmployee() {
 
       if (response.status === 200 || response.status === 201) {
         navigate("/admin/dashboard");
+      } else {
+        <Alert color="red">Error updating user: {response.errors}</Alert>;
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating user:", error);
     }
   };
@@ -73,11 +85,11 @@ export default function AddEmployee() {
               className="-mb-3"
               placeholder={undefined}
             >
-              Your Name
+              Full Name
             </Typography>
             <Input
               size="lg"
-              placeholder="Enter your name"
+              placeholder="Enter full name"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -98,8 +110,8 @@ export default function AddEmployee() {
             </Typography>
             <Select
               label="Select Position"
-              value={inputData.position_id || ""}
-              onChange={(val) => handleInputChange(val)}
+              value={selectedPositionId}
+              onChange={handlePositionChange}
               placeholder={undefined}
             >
               <Option value="1">Full Stack Development (Web)</Option>
@@ -113,29 +125,26 @@ export default function AddEmployee() {
             >
               Department
             </Typography>
-            <Input
-              size="lg"
-              placeholder="Enter your department"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-              crossOrigin={undefined}
-              name="department"
-              value={inputData.department}
-              onChange={handleInputChange}
-            />
+            <Select
+              label="Select Department"
+              value={selectedDepartmentId}
+              onChange={handleDepartmentChange}
+              placeholder={undefined}
+            >
+              <Option value="1">Web Development</Option>
+              <Option value="2">Mobile Development</Option>
+            </Select>
             <Typography
               variant="h6"
               color="blue-gray"
               className="-mb-3"
               placeholder={undefined}
             >
-              Your Email
+              Email
             </Typography>
             <Input
               size="lg"
-              placeholder="Enter your email"
+              placeholder="Enter email"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",

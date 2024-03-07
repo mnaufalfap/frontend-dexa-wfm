@@ -1,112 +1,123 @@
+import { useState, useEffect, SetStateAction } from "react";
+import { Navigate } from "react-router-dom";
 import { Card, Typography } from "@material-tailwind/react";
+import axios from "axios";
+import { HOST_API } from "../../../config";
 
-const TABLE_HEAD = ["Name", "Date Time", "Capture", "Location"];
+const TABLE_HEAD = ["Name", "Date Time", "Location", "Capture"];
 
-const TABLE_ROWS = [
-  {
-    name: "John Michael",
-    job: "Manager",
-    date: "23/04/18",
-  },
-  {
-    name: "Alexa Liras",
-    job: "Developer",
-    date: "23/04/18",
-  },
-  {
-    name: "Laurent Perrier",
-    job: "Executive",
-    date: "19/09/17",
-  },
-  {
-    name: "Michael Levi",
-    job: "Developer",
-    date: "24/12/08",
-  },
-  {
-    name: "Richard Gran",
-    job: "Manager",
-    date: "04/10/21",
-  },
-];
+export default function TableEmployee() {
+  const [attendanceData, setAttendanceData] = useState([]);
 
-export default function TableAttendance() {
+  useEffect(() => {
+    const fetchAttendanceData = async () => {
+      try {
+        const token = localStorage.getItem("_token");
+
+        const url = `${HOST_API}/list-attendance`;
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setAttendanceData(response.data.data);
+      } catch (error) {
+        console.error("Error fetching attendance data:", error);
+      }
+    };
+
+    fetchAttendanceData();
+  }, []);
+
   return (
-    <Card className="h-full w-full overflow-scroll" placeholder={undefined}>
-      <table className="w-full min-w-max table-auto text-left">
-        <thead>
-          <tr>
-            {TABLE_HEAD.map((head) => (
-              <th
-                key={head}
-                className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
-              >
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal leading-none opacity-70"
-                  placeholder={undefined}
+    <>
+      <Card className="h-full w-full overflow-scroll" placeholder={undefined}>
+        <table className="w-full min-w-max table-auto text-left">
+          <thead>
+            <tr>
+              {TABLE_HEAD.map((head) => (
+                <th
+                  key={head}
+                  className="border-b border-blue-gray-100 bg-blue-gray-50 p-4"
                 >
-                  {head}
-                </Typography>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {TABLE_ROWS.map(({ name, job, date }, index) => {
-            const isLast = index === TABLE_ROWS.length - 1;
-            const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+                  <Typography
+                    variant="small"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                    placeholder={undefined}
+                  >
+                    {head}
+                  </Typography>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {attendanceData &&
+              attendanceData.map(
+                (
+                  {
+                    user_id,
+                    user,
+                    date_time_attendance,
+                    location_attendance,
+                    photo_attendance,
+                  },
+                  index
+                ) => {
+                  const isLast = index === attendanceData.length - 1;
+                  const classes = isLast
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
 
-            return (
-              <tr key={name}>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                    placeholder={undefined}
-                  >
-                    {name}
-                  </Typography>
-                </td>
-                <td className={`${classes} bg-blue-gray-50/50`}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                    placeholder={undefined}
-                  >
-                    {job}
-                  </Typography>
-                </td>
-                <td className={classes}>
-                  <Typography
-                    variant="small"
-                    color="blue-gray"
-                    className="font-normal"
-                    placeholder={undefined}
-                  >
-                    {date}
-                  </Typography>
-                </td>
-                <td className={`${classes} bg-blue-gray-50/50`}>
-                  <Typography
-                    as="a"
-                    href="#"
-                    variant="small"
-                    color="blue-gray"
-                    className="font-medium"
-                    placeholder={undefined}
-                  >
-                    Edit
-                  </Typography>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </Card>
+                  return (
+                    <tr key={user_id}>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                          placeholder={undefined}
+                        >
+                          {user.name}
+                        </Typography>
+                      </td>
+                      <td className={`${classes} bg-blue-gray-50/50`}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                          placeholder={undefined}
+                        >
+                          {date_time_attendance}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                          placeholder={undefined}
+                        >
+                          {location_attendance}
+                        </Typography>
+                      </td>
+                      <td
+                        className={`${classes} bg-blue-gray-50/50 flex flex-col`}
+                      >
+                        <img
+                          src={photo_attendance} // Atribut src diisi dengan data base64
+                          alt="Attendance Photo" // Menambahkan atribut alt untuk ketersediaan aksesibilitas
+                          className="w-16 h-16 rounded-md object-cover" // Menyesuaikan ukuran gambar sesuai kebutuhan
+                        />
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+          </tbody>
+        </table>
+      </Card>
+    </>
   );
 }
